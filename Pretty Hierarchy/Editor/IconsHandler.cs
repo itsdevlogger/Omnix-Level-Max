@@ -38,6 +38,7 @@ namespace Omnix.Hierarchy
             var currentlyHighest = int.MinValue;
             foreach (Component comp in components)
             {
+                if (comp == null) continue; // Possible when missing reference script
                 Type type = comp.GetType();
                 int priority = Settings.PriorityOf(type);
 

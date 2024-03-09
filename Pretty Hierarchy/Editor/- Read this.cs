@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using MenuManagement.Base;
 using MenuManagement.Behaviours;
+using R.ActionsAndTriggers;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,8 +10,6 @@ using UnityEngine;
 [InitializeOnLoad]
 public class SetIconsWithInheritanceWindow
 {
-    private const string MENU_PATH = "Assets/Copy asset GUID";
-
     /// <summary>
     /// If you want to assign some icon to a base class and all of its child classes,
     /// Place it here.
@@ -22,10 +20,11 @@ public class SetIconsWithInheritanceWindow
     {
         { typeof(BaseMenu), "52c5f97f77263b040b2c4f7961b64b4c" },
         { typeof(BaseDynamicMenu<,,>), "52c5f97f77263b040b2c4f7961b64b4c" },
-        // { typeof(ITrigger), "2edb8a89c739ee745ae8a7e4b2f6e9c2" },
-        // { typeof(BaseAction), "c03cd662dad067c48a0821d17531b828" },
+        { typeof(ITrigger), "2edb8a89c739ee745ae8a7e4b2f6e9c2" },
+        { typeof(BaseAction), "c03cd662dad067c48a0821d17531b828" },
     };
 
+    private const string MENU_PATH = "Assets/Copy asset GUID";
     private Type _baseType;
     private Texture2D _selectedTexture;
     private string _errorMessage;

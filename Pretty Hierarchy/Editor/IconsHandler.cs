@@ -9,8 +9,7 @@ namespace Omnix.Hierarchy
     public static class IconsHandler
     {
         private static Dictionary<Type, Texture> TYPE_CONTENT = new Dictionary<Type, Texture>();
-
-       
+        
         private static bool TryGetContent(Component component, Type type, out GUIContent content)
         {
             if (TYPE_CONTENT.TryGetValue(type, out Texture texture))
@@ -28,6 +27,14 @@ namespace Omnix.Hierarchy
 
         private static bool TryGetContent(GameObject target, out GUIContent content)
         {
+            if (target.TryGetComponent(out ObjectInfo info))
+            {
+                content = EditorGUIUtility.ObjectContent(info, typeof(ObjectInfo));
+                content.text = null;
+                content.tooltip = info.info;
+                return true;
+            }
+            
             content = null;
             Component[] components = target.GetComponents<Component>();
             if (components == null || components.Length == 0)
@@ -68,7 +75,7 @@ namespace Omnix.Hierarchy
                 Debug.Log($"Target: {target.name}, isp: {PrettyHierarchy.IsSelfPrefab} - Inside Prefab");
                 return;
             }*/
-
+            
             if (TryGetContent(target, out GUIContent content) == false) return;
 
             PrettyHierarchy.HideDefaultIcon();

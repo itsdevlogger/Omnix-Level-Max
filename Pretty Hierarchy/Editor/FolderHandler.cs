@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
@@ -6,63 +5,6 @@ namespace Omnix.Hierarchy
 {
     public static class FolderHandler
     {
-        [MenuItem("GameObject/Create Folder", true)]
-        private static bool ValidateCreate() => Selection.objects.Length <= 1;
-
-        [MenuItem("GameObject/Turn Into Folder", true)]
-        private static bool ValidateTurnInto() => Selection.objects.Length == 1;
-
-        [MenuItem("GameObject/Create Folder", false, -1)]
-        private static void Create()
-        {
-            var folder = new GameObject("New Folder");
-            Undo.RegisterCreatedObjectUndo(folder, folder.name);
-            Transform activeTransform = Selection.activeTransform;
-            if (activeTransform != null)
-            {
-                folder.transform.SetParent(activeTransform);
-                if (activeTransform.GetComponentInParent<RectTransform>(true) != null)
-                {
-                    folder.AddComponent<RectTransform>();
-                }
-            }
-
-            ResetPosition(folder);
-            BasicSetup(folder);
-            HierarchyUtils.StartRenamingObject(folder);
-        }
-
-        [MenuItem("GameObject/Turn Into Folder", false, -2)]
-        private static void TurnTo()
-        {
-            GameObject active = Selection.activeGameObject;
-            if (active == null) return;
-
-            if (active.GetComponents<Component>().Length > 1)
-            {
-                bool shouldContinue = EditorUtility.DisplayDialog("Confirm", $"The object {active.name} has component(s) other than Transform.\nAll these components will be destroyed.\nWish to continue?", "Yes", "No");
-                if (shouldContinue == false) return;
-            }
-
-            foreach (Component component in active.GetComponents<Component>().Where(component => component is not Transform).ToList())
-            {
-                Object.DestroyImmediate(component);
-            }
-            
-            ResetPositionAdvanced(active.transform);
-            BasicSetup(active);
-        }
-
-        
-        private static void BasicSetup(GameObject folder)
-        {
-            EnsureTagExists();
-            folder.tag = Settings.FOLDER_TAG;
-
-            EditorUtility.SetDirty(folder);
-            Selection.activeGameObject = folder;
-        }
-
         public static void EnsureTagExists()
         {
             Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
@@ -89,7 +31,7 @@ namespace Omnix.Hierarchy
             so.Update();
         }
 
-        private static void ResetPosition(GameObject target)
+        public static void ResetPosition(GameObject target)
         {
             if (target.TryGetComponent(out RectTransform rect) == false)
             {
@@ -118,7 +60,7 @@ namespace Omnix.Hierarchy
             target.transform.localScale = Vector3.one;
         }
 
-        private static void ResetPositionAdvanced(Transform target)
+        public static void ResetPositionAdvanced(Transform target)
         {
             var children = new Transform[target.childCount];
             for (int i = 0; i < target.childCount; i++)
@@ -141,40 +83,50 @@ namespace Omnix.Hierarchy
             }
         }
         
-        private static void ActiveButton(GameObject target, Rect selectionRect)
+        private static void DrawButtons(GameObject target, Rect selectionRect, ObjectInfo info)
         {
-            Rect rect = selectionRect;
-            rect.xMax = rect.width;
-            rect.x = selectionRect.xMax;
-
-            GUI.color = new Color(0, 0, 0, 0f);
-
-            if (GUI.Button(rect, ""))
+            Rect rect = new Rect(selectionRect);
+            rect.x += rect.width - rect.height;
+            rect.width = rect.height;
+            GUIContent iconContent = target.activeInHierarchy ? EditorGUIUtility.IconContent("d_toggle_on_focus") : EditorGUIUtility.IconContent("d_toggle_bg");
+            if (GUI.Button(rect, "    "))
             {
+                Undo.RecordObject(target, "Change Object Active State");
                 target.SetActive(!target.activeInHierarchy);
+                EditorUtility.SetDirty(target);
             }
 
-            GUI.color = new Color(1, 1, 1, 1);
-
-
-            //label placement calc
-            rect.x = selectionRect.xMax;
-
-            //show label based on active state
-            GUI.Label(rect, target.activeInHierarchy ? EditorGUIUtility.IconContent("d_toggle_on_focus") : EditorGUIUtility.IconContent("d_toggle_bg"));
+            GUI.Label(rect, iconContent);
+            if (info == null) return;
+            var aboutContent = EditorGUIUtility.ObjectContent(info, typeof(ObjectInfo));
+            aboutContent.text = null;
+            aboutContent.tooltip = null;
+            rect.x -= rect.width;
+            GUI.Label(rect, aboutContent);
+            
+            
+        }
+        
+        private static void DrawInfoGizmo()
+        {
+            
         }
 
         public static void Handle(GameObject target, Rect rect)
         {
-            ActiveButton(target, rect);
+            bool hasInfo = target.TryGetComponent(out ObjectInfo info);
+            DrawButtons(target, rect, info);
             ResetPosition(target);
+            if (hasInfo) DrawInfoGizmo();
 
             target.transform.hideFlags = HideFlags.NotEditable | HideFlags.HideInInspector;
             target.hideFlags = HideFlags.HideInInspector;
             SceneVisibilityManager.instance.DisablePicking(target, false);
 
             PrettyHierarchy.HideDefaultIcon();
-            EditorGUI.LabelField(rect, HierarchyUtils.GetFolderIcon(target.transform.childCount > 0));
+            GUIContent guiContent = HierarchyUtils.GetFolderIcon(target.transform.childCount > 0);
+            if (hasInfo) guiContent.tooltip = info.info;
+            EditorGUI.LabelField(rect, guiContent);
         }
     }
 }

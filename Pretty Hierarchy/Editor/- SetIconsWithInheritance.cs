@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Omnix.Hierarchy
 {
     [InitializeOnLoad]
-    public class SetIconsWithInheritanceWindow
+    public class SetIconsWithInheritance
     {
         /// <summary>
         /// If you want to assign some icon to a base class and all of its child classes,
@@ -21,7 +21,7 @@ namespace Omnix.Hierarchy
         {
             { typeof(BaseMenu), "52c5f97f77263b040b2c4f7961b64b4c" },
             { typeof(BaseDynamicMenu<,,>), "52c5f97f77263b040b2c4f7961b64b4c" },
-            { typeof(ITrigger), "2edb8a89c739ee745ae8a7e4b2f6e9c2" },
+            { typeof(BaseTrigger), "2edb8a89c739ee745ae8a7e4b2f6e9c2" },
             { typeof(BaseAction), "c03cd662dad067c48a0821d17531b828" },
         };
 
@@ -30,7 +30,7 @@ namespace Omnix.Hierarchy
         private string _errorMessage;
 
         #region Update All Script Icons
-        static SetIconsWithInheritanceWindow()
+        static SetIconsWithInheritance()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
             {

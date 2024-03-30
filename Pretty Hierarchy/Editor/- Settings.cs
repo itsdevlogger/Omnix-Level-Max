@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 namespace Omnix.Hierarchy
@@ -26,7 +27,21 @@ namespace Omnix.Hierarchy
             { typeof(Scrollbar),      -1 },        // these components should be prioritized //
             { typeof(ScrollRect),     -1 },        // over the image component               //
             { typeof(Dropdown),       -1 },        ////////////////////////////////////////////
-            { typeof(Image),          -2 } 
+            { typeof(Image),          -2 },
+            
+            { typeof(BoxCollider),         1 },
+            { typeof(CapsuleCollider),     1 },
+            { typeof(MeshCollider),        1 },
+            { typeof(SphereCollider),      1 },
+            { typeof(TerrainCollider),     1 },
+            { typeof(WheelCollider),       1 },
+            { typeof(BoxCollider2D),       1 },
+            { typeof(CapsuleCollider2D),   1 },
+            { typeof(CompositeCollider2D), 1 },
+            { typeof(CustomCollider2D),    1 },
+            { typeof(EdgeCollider2D),      1 },
+            { typeof(PolygonCollider2D),   1 },
+            { typeof(TilemapCollider2D),   1 },
         };
         // @formatter:on
 
@@ -39,7 +54,7 @@ namespace Omnix.Hierarchy
             typeof(RectTransform),
             typeof(CanvasRenderer) // Canvas renderer is never alone, so ignore it
         };
-        
+
         /// <summary>
         /// Names of icons that shall never be shown
         /// </summary>

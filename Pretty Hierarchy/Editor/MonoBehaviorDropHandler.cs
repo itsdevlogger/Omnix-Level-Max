@@ -23,7 +23,7 @@ namespace Omnix.Hierarchy
 
             if (perform == false) return DragAndDropVisualMode.Copy;
 
-            GameObject go = CreateGameObject(type.Name, dropTargetInstanceId, dropMode, parentForDraggedObjects);
+            GameObject go = CreateGameObject(ObjectNames.NicifyVariableName(type.Name), dropTargetInstanceId, dropMode, parentForDraggedObjects);
             if (go == null) return DragAndDropVisualMode.None;
 
             go.AddComponent(type);

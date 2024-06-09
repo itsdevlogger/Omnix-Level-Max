@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using MenuManagement.Base;
 using MenuManagement.Behaviours;
-using R.ActionsAndTriggers;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,8 +20,6 @@ namespace Omnix.Hierarchy
         {
             { typeof(BaseMenu), "52c5f97f77263b040b2c4f7961b64b4c" },
             { typeof(BaseDynamicMenu<,,>), "52c5f97f77263b040b2c4f7961b64b4c" },
-            { typeof(BaseTrigger), "2edb8a89c739ee745ae8a7e4b2f6e9c2" },
-            { typeof(BaseAction), "c03cd662dad067c48a0821d17531b828" },
         };
 
         private Type _baseType;

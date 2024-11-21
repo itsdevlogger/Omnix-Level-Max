@@ -11,6 +11,7 @@ namespace Omnix.Hierarchy
         public static bool IsInsidePrefab { get; private set; }
         private static Color curBackColor;
         private static Rect curRect;
+        private static GameObject target;
 
         static PrettyHierarchy()
         {
@@ -25,16 +26,16 @@ namespace Omnix.Hierarchy
 
         private static void HierarchyWindowItemOnGUI(int instanceID, Rect rect)
         {
-            var target = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            target = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (target == null) return;
 
-            GameObject source = PrefabUtility.GetCorrespondingObjectFromOriginalSource(target);
-            IsInsidePrefab = source != null;
+            IsInsidePrefab = PrefabUtility.GetCorrespondingObjectFromOriginalSource(target) != null;
             bool isSelected = Selection.instanceIDs.Contains(instanceID);
             bool isHovering = rect.Contains(Event.current.mousePosition);
             
             curRect = rect;
             curBackColor = HierarchyUtils.GetBackgroundColor(isSelected, isHovering, hierarchyHasFocus);
+
             FolderHandler.EnsureTagExists();
             if (target.CompareTag(Settings.FOLDER_TAG)) FolderHandler.Handle(target, rect);
             else IconsHandler.Handle(target, rect);
@@ -42,8 +43,17 @@ namespace Omnix.Hierarchy
         
         public static void HideDefaultIcon()
         {
-            Rect backRect = new Rect(curRect.x, curRect.y, 18.5f, curRect.height);
-            EditorGUI.DrawRect(backRect, curBackColor);
+            Rect totalRect = curRect;
+            totalRect.width += totalRect.x;
+            totalRect.x = 0;
+            EditorGUI.DrawRect(totalRect, curBackColor);
+            
+            Rect backRect = new Rect(curRect.x + 18.5f, curRect.y, curRect.width - 18.5f, curRect.height);
+            Color color = IsInsidePrefab ? new Color(0.573f, 0.918f, 0.929f) : Color.white;
+            var guiColor= GUI.contentColor;
+            GUI.contentColor = color;
+            EditorGUI.LabelField(backRect, target.name);
+            GUI.contentColor = guiColor;
         }
     }
 }

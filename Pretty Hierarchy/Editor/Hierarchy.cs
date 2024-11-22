@@ -43,13 +43,15 @@ namespace Omnix.Hierarchy
         
         public static void HideDefaultIcon()
         {
-            Rect totalRect = curRect;
-            totalRect.width += totalRect.x;
-            totalRect.x = 0;
-            EditorGUI.DrawRect(totalRect, curBackColor);
+            //Rect totalRect = curRect;
+            //totalRect.width += totalRect.x;
+            //totalRect.x = 0;
+            EditorGUI.DrawRect(curRect, curBackColor);
             
             Rect backRect = new Rect(curRect.x + 18.5f, curRect.y, curRect.width - 18.5f, curRect.height);
-            Color color = IsInsidePrefab ? new Color(0.573f, 0.918f, 0.929f) : Color.white;
+            Color color;
+            if (IsInsidePrefab) color = target.activeInHierarchy ? new Color(0.573f, 0.918f, 0.929f) : new Color(0.502f, 0.702f, 0.710f);
+            else color = target.activeInHierarchy ? Color.white : new Color(0.729f, 0.729f, 0.729f);
             var guiColor= GUI.contentColor;
             GUI.contentColor = color;
             EditorGUI.LabelField(backRect, target.name);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace InventorySystem
 {
-    public class InteractionRequiresKey : MonoBehaviour, IInteractionCriteria
+    public class IrnRequiresKey : MonoBehaviour, IInteractionCriteria
     {
         private const string COMPONENT = nameof(InventoryPlayer);
         

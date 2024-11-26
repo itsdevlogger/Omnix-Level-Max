@@ -31,7 +31,7 @@ namespace Omnix.Hierarchy
 
             IsInsidePrefab = PrefabUtility.GetCorrespondingObjectFromOriginalSource(target) != null;
             bool isSelected = Selection.instanceIDs.Contains(instanceID);
-            bool isHovering = rect.Contains(Event.current.mousePosition);
+            bool isHovering = IsHovering(rect);
             
             curRect = rect;
             curBackColor = HierarchyUtils.GetBackgroundColor(isSelected, isHovering, hierarchyHasFocus);
@@ -39,6 +39,14 @@ namespace Omnix.Hierarchy
             FolderHandler.EnsureTagExists();
             if (target.CompareTag(Settings.FOLDER_TAG)) FolderHandler.Handle(target, rect);
             else IconsHandler.Handle(target, rect);
+        }
+
+        private static bool IsHovering(Rect rect)
+        {
+            rect.width += rect.x;
+            rect.x = 0f;
+            var mousePos = Event.current.mousePosition;
+            return rect.Contains(mousePos);
         }
         
         public static void HideDefaultIcon()

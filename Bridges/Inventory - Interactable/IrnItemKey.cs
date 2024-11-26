@@ -4,7 +4,7 @@ using UnityEngine;
 namespace InventorySystem
 {
     [RequireComponent(typeof(Collider))]
-    public class InteractableKey : InventoryItem, IInteractionProcessor
+    public class IrnItemKey : InventoryItem, IInteractionProcessor
     {
         [SerializeField] private bool _immedietEndInteraction = true;
 
